@@ -873,7 +873,7 @@ async function makeShare(){
   g.fillStyle='#f7f0dc'; g.font=`900 46px ${SERIF}`; g.textAlign='center'; g.fillText('設計你的專屬麻辣燙',W/2,72);
   const img=S.shot?await loadImg(S.shot):null; const bx=40,by=140,bw=W-80,bh=640;
   g.save(); g.beginPath(); if(g.roundRect) g.roundRect(bx,by,bw,bh,26); else g.rect(bx,by,bw,bh); g.clip(); g.fillStyle='#232a19'; g.fillRect(bx,by,bw,bh);
-  if(img){ const s=Math.max(bw/img.width,bh/img.height), iw=img.width*s, ih=img.height*s; g.drawImage(img,bx+(bw-iw)/2,by+(bh-ih)/2-ih*.08,iw,ih); }
+  if(img){ const s=Math.max(bw/img.width,bh/img.height), iw=img.width*s, ih=img.height*s; g.drawImage(img,bx+(bw-iw)/2,by+(bh-ih)/2+ih*.015,iw,ih); }
   g.restore();
   g.textAlign='left'; g.fillStyle='#6b6648'; g.font=`700 32px ${SANS}`; g.fillText('我的專屬麻辣燙是',60,850);
   g.fillStyle='#a8351f'; g.font=`900 84px ${SERIF}`; g.fillText(main.n,56,950);
