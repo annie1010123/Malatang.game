@@ -282,7 +282,7 @@ button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offse
 const CONFIG={
   gameUrl:'https://malatanggame.vercel.app',        // 遊戲正式網址，會附在分享文字裡
   lineCouponUrl:'',  // LINE 官方帳號加好友／領優惠券連結
-  gaId:'',           // Google Analytics 4 評估 ID（G- 開頭），填了才會開始記錄點擊數據
+  gaId:'G-S6SH7VD5TN', // Google Analytics 4 評估 ID（G- 開頭），填了才會開始記錄點擊數據
 };
 
 const $=s=>document.querySelector(s);
@@ -753,8 +753,8 @@ function tapItem(id){
   track('ingredient_add',{item_name:BYID[id].n,item_category:CATS.find(c=>c[0]===BYID[id].cat)[1]});
   renderTabs(); renderGrid(); updateCount();
 }
-$('#undoBtn').addEventListener('click',()=>{ const id=S.order.pop(); if(!id) return; S.counts[id]--; if(!S.counts[id]) delete S.counts[id]; removeLast(); renderTabs(); renderGrid(); updateCount(); });
-$('#clearBtn').addEventListener('click',()=>{ if(!total()) return; clearItems(); renderTabs(); renderGrid(); updateCount(); });
+$('#undoBtn').addEventListener('click',()=>{ const id=S.order.pop(); if(!id) return; S.counts[id]--; if(!S.counts[id]) delete S.counts[id]; removeLast(); renderTabs(); renderGrid(); updateCount(); track('ingredient_undo'); });
+$('#clearBtn').addEventListener('click',()=>{ if(!total()) return; clearItems(); renderTabs(); renderGrid(); updateCount(); track('ingredient_clear'); });
 
 function goTitle(){ only('#title'); S.step='title'; shotName='title'; showcase(); refreshTitle(); }
 function goSoup(){
@@ -763,8 +763,8 @@ function goSoup(){
   document.querySelectorAll('.soupBtn').forEach(x=>x.classList.remove('on'));
 }
 function goPick(){ only('#pickScr'); S.step='pick'; shotName='pick'; S.tab='veg'; renderTabs(); renderGrid(); updateCount(); }
-$('#startBtn').addEventListener('click',goSoup);
-$('#soupBack').addEventListener('click',goTitle);
+$('#startBtn').addEventListener('click',()=>{ track('game_start'); goSoup(); });
+$('#soupBack').addEventListener('click',()=>{ track('soup_back'); goTitle(); });
 $('#soupNext').addEventListener('click',()=>{ if(S.soup&&!pouring) goPick(); });
 $('#cookBtn').addEventListener('click',cook);
 $('#againBtn').addEventListener('click',()=>{ track('play_again'); goSoup(); });
@@ -935,15 +935,15 @@ function refreshTitle(){
   $('#collBtn').textContent=`稱號收集冊（${got}／${TITLES.length}）`;
   $('#bestLine').textContent=save.bowls?`你已經設計了 ${save.bowls} 碗`:'';
 }
-function openColl(back){
-  collBack=back;
+function openColl(back,from){
+  collBack=back; track('collection_open',{from:from});
   const got=TITLES.filter(t=>save.unlocked[t.id]).length;
   $('#collProg').textContent=`已收集 ${got}／${TITLES.length} 個稱號。沒解開的會顯示提示。`;
   $('#cgrid').innerHTML=TITLES.map(t=>save.unlocked[t.id]?`<div class="card got"><h3>${t.n}</h3><p>${t.d}</p></div>`:`<div class="card lock"><h3>？？？</h3><p>提示：${t.h}</p></div>`).join('');
   $('#coll').hidden=false; $('#coll').scrollTop=0;
 }
-$('#collBtn').addEventListener('click',()=>openColl('#title'));
-$('#rColl').addEventListener('click',()=>openColl('#result'));
+$('#collBtn').addEventListener('click',()=>openColl('#title','title'));
+$('#rColl').addEventListener('click',()=>openColl('#result','result'));
 $('#collClose').addEventListener('click',()=>{ $('#coll').hidden=true; });
 
 function showcase(){
